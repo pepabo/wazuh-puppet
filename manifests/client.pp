@@ -44,7 +44,7 @@ class wazuh::client(
   $wodle_openscap_content          = $::wazuh::params::wodle_openscap_content,
   $service_has_status              = $::wazuh::params::service_has_status,
   $ossec_conf_template             = 'wazuh/wazuh_agent.conf.erb',
-  Boolean $manage_firewall         = $::wazuh::params::manage_firewall,
+  $manage_firewall                 = $::wazuh::params::manage_firewall,
 ) inherits wazuh::params {
   validate_bool(
     $ossec_active_response, $ossec_rootcheck,
@@ -115,16 +115,19 @@ class wazuh::client(
   }
 
   concat::fragment {
-    default:
-      target => 'ossec.conf',
-      notify => Service[$agent_service_name];
     'ossec.conf_header':
+      target => 'ossec.conf',
+      notify => Service[$agent_service_name],
       order   => 00,
       content => "<ossec_config>\n";
     'ossec.conf_agent':
+      target => 'ossec.conf',
+      notify => Service[$agent_service_name],
       order   => 10,
       content => template($ossec_conf_template);
     'ossec.conf_footer':
+      target => 'ossec.conf',
+      notify => Service[$agent_service_name],
       order   => 99,
       content => '</ossec_config>';
   }

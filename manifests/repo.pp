@@ -34,18 +34,13 @@ class wazuh::repo (
       }
     }
     'Linux', 'Redhat' : {
-        case $::os[name] {
-          /^(CentOS|RedHat|OracleLinux|Fedora|Amazon)$/: {
-            if ( $::operatingsystemrelease =~ /^5.*/ ) {
-              $baseurl  = 'https://packages.wazuh.com/3.x/yum/5/'
-              $gpgkey   = 'http://packages.wazuh.com/key/GPG-KEY-WAZUH-5'
-            } else {
-              $baseurl  = 'https://packages.wazuh.com/3.x/yum/'
-              $gpgkey   = 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
-            }
-          }
-          default: { fail('This ossec module has not been tested on your distribution.') }
-        }
+      if ( $::operatingsystemrelease =~ /^5.*/ ) {
+        $baseurl  = 'https://packages.wazuh.com/3.x/yum/5/'
+        $gpgkey   = 'http://packages.wazuh.com/key/GPG-KEY-WAZUH-5'
+      } else {
+        $baseurl  = 'https://packages.wazuh.com/3.x/yum/'
+        $gpgkey   = 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
+      }
       # Set up OSSEC repo
       yumrepo { 'wazuh':
         descr    => "WAZUH OSSEC Repository - www.wazuh.com",
